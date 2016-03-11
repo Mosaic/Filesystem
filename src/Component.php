@@ -14,10 +14,12 @@ class Component extends AbstractComponent
     private $folderStructure;
 
     /**
+     * @param string                    $implementation
      * @param FolderStructureConvention $folderStructure
      */
-    public function __construct(FolderStructureConvention $folderStructure)
+    protected function __construct(string $implementation, FolderStructureConvention $folderStructure)
     {
+        parent::__construct($implementation);
         $this->folderStructure = $folderStructure;
     }
 
