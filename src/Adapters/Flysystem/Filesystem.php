@@ -182,7 +182,7 @@ class Filesystem implements FilesystemInterface
      */
     public function rename($path, $newpath)
     {
-        return $this->manager->read($path, $newpath);
+        return $this->manager->rename($path, $newpath);
     }
 
     /**
