@@ -13,7 +13,7 @@ use League\Flysystem\Dropbox\DropboxAdapter;
 use Mosaic\Common\Conventions\FolderStructureConvention;
 use Mosaic\Filesystem\Providers\FlystemProvider;
 
-class Component implements \Mosaic\Common\Components\Component
+final class Component implements \Mosaic\Common\Components\Component
 {
     /**
      * @var FolderStructureConvention
@@ -54,7 +54,6 @@ class Component implements \Mosaic\Common\Components\Component
     /**
      * @param  string   $name
      * @param  callable $resolver
-     * @param  array    $params
      * @return $this
      */
     public function disk(string $name, callable $resolver)
@@ -129,7 +128,7 @@ class Component implements \Mosaic\Common\Components\Component
      */
     public static function extend(string $name, callable $callback)
     {
-        static::$custom[$name] = $callback;
+        self::$custom[$name] = $callback;
     }
 
     /**
@@ -141,14 +140,14 @@ class Component implements \Mosaic\Common\Components\Component
     }
 
     /**
-     * @param  string $name
-     * @param  array  $params
-     * @return mixed
+     * @param  string    $name
+     * @param  array     $params
+     * @return Component
      */
     public function __call(string $name, array $params = [])
     {
-        if (isset(static::$custom[$name])) {
-            return $this->disk($name, static::$custom[$name]);
+        if (isset(self::$custom[$name])) {
+            return $this->disk($name, self::$custom[$name]);
         }
 
         throw new BadMethodCallException;
