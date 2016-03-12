@@ -43,8 +43,10 @@ class FlystemProvider implements DefinitionProviderInterface
 
                 $manager = new MountManager();
 
-                foreach ($this->collection->release() as $name => $adapter) {
-                    $manager->mountFilesystem($name, new Flystem($adapter));
+                foreach ($this->collection->all() as $name => $adapter) {
+                    $manager->mountFilesystem($name, new Flystem(
+                        $adapter()
+                    ));
                 }
 
                 return new Filesystem(

@@ -2,6 +2,8 @@
 
 namespace Mosaic\Filesystem\Adapters\Flysystem;
 
+use InvalidArgumentException;
+
 class DiskResolverCollection
 {
     /**
@@ -13,21 +15,29 @@ class DiskResolverCollection
      * @param          $name
      * @param callable $resolver
      */
-    public function add($name, callable $resolver)
+    public function add(string $name, callable $resolver)
     {
         $this->resolvers[$name] = $resolver;
     }
 
     /**
-     * @return array
+     * @param  string   $name
+     * @return callable
      */
-    public function release()
+    public function get(string $name) : callable
     {
-        $resolvers = [];
-        foreach ($this->resolvers as $name => $resolver) {
-            $resolvers[$name] = $resolver();
+        if (!isset($this->resolvers[$name])) {
+            throw new InvalidArgumentException('Disk resolver [' . $name . '] does not exist.');
         }
 
-        return $resolvers;
+        return $this->resolvers[$name];
+    }
+
+    /**
+     * @return array
+     */
+    public function all() : array
+    {
+        return $this->resolvers;
     }
 }

@@ -3,6 +3,7 @@
 namespace Mosaic\Filesystem\Adapters\Flysystem;
 
 use Aws\S3\S3Client;
+use BadMethodCallException;
 use Dropbox\Client;
 use Interop\Container\Definition\DefinitionProviderInterface;
 use League\Flysystem\Adapter\Ftp;
@@ -25,6 +26,11 @@ class Component implements \Mosaic\Common\Components\Component
     private $diskResolvers;
 
     /**
+     * @var array
+     */
+    private static $custom = [];
+
+    /**
      * @param FolderStructureConvention $folderStructure
      */
     public function __construct(FolderStructureConvention $folderStructure)
@@ -41,13 +47,14 @@ class Component implements \Mosaic\Common\Components\Component
     public function getProviders() : array
     {
         return [
-            new FlystemProvider($this->diskResolvers)
+            new FlystemProvider($this->getDiskResolvers())
         ];
     }
 
     /**
      * @param  string   $name
      * @param  callable $resolver
+     * @param  array    $params
      * @return $this
      */
     public function disk(string $name, callable $resolver)
@@ -90,7 +97,7 @@ class Component implements \Mosaic\Common\Components\Component
      */
     public function aws(string $bucket, array $settings)
     {
-        $this->disk('ftp', function () use ($bucket, $settings) {
+        $this->disk('aws', function () use ($bucket, $settings) {
 
             $client = S3Client::factory($settings);
 
@@ -122,5 +129,28 @@ class Component implements \Mosaic\Common\Components\Component
      */
     public static function extend(string $name, callable $callback)
     {
+        static::$custom[$name] = $callback;
+    }
+
+    /**
+     * @return DiskResolverCollection
+     */
+    public function getDiskResolvers()
+    {
+        return $this->diskResolvers;
+    }
+
+    /**
+     * @param  string $name
+     * @param  array  $params
+     * @return mixed
+     */
+    public function __call(string $name, array $params = [])
+    {
+        if (isset(static::$custom[$name])) {
+            return $this->disk($name, static::$custom[$name]);
+        }
+
+        throw new BadMethodCallException;
     }
 }

@@ -157,7 +157,7 @@ class Filesystem implements FilesystemInterface
      */
     public function update($path, $contents, array $config = [])
     {
-        return $this->manager->update($path, $config, $config);
+        return $this->manager->update($path, $contents, $config);
     }
 
     /**
