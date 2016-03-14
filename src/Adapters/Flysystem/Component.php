@@ -78,12 +78,13 @@ final class Component implements \Mosaic\Common\Components\Component
     }
 
     /**
-     * @param  array $settings
+     * @param  array  $settings
+     * @param  string $name
      * @return $this
      */
-    public function ftp(array $settings)
+    public function ftp(array $settings, string $name = 'ftp')
     {
-        $this->disk('ftp', function () use ($settings) {
+        $this->disk($name, function () use ($settings) {
             return new Ftp($settings);
         });
 
@@ -91,12 +92,14 @@ final class Component implements \Mosaic\Common\Components\Component
     }
 
     /**
-     * @param  array $settings
+     * @param  string $bucket
+     * @param  array  $settings
+     * @param  string $name
      * @return $this
      */
-    public function aws(string $bucket, array $settings)
+    public function aws(string $bucket, array $settings, string $name = 'aws')
     {
-        $this->disk('aws', function () use ($bucket, $settings) {
+        $this->disk($name, function () use ($bucket, $settings) {
 
             $client = S3Client::factory($settings);
 
@@ -109,11 +112,12 @@ final class Component implements \Mosaic\Common\Components\Component
     /**
      * @param  string $accessToken
      * @param  string $appSecret
+     * @param  string $name
      * @return $this
      */
-    public function dropbox(string $accessToken, string $appSecret)
+    public function dropbox(string $accessToken, string $appSecret, string $name = 'dropbox')
     {
-        $this->disk('dropbox', function () use ($accessToken, $appSecret) {
+        $this->disk($name, function () use ($accessToken, $appSecret) {
             return new DropboxAdapter(
                 new Client($accessToken, $appSecret)
             );
