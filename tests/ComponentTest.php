@@ -11,7 +11,7 @@ class ComponentTest extends \PHPUnit_Framework_TestCase
 {
     public function test_can_ask_for_flystem_implementation()
     {
-        $component = Component::flystem(new DefaultFolderStructure('/'));
+        $component = Component::flysystem(new DefaultFolderStructure('/'));
 
         $this->assertInstanceOf(\Mosaic\Filesystem\Adapters\Flysystem\Component::class, $component);
     }

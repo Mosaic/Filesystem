@@ -25,9 +25,9 @@ class Component extends AbstractComponent
 
     /**
      * @param  FolderStructureConvention $folderStructure
-     * @return FlystemComponent
+     * @return FlysystemComponent
      */
-    public static function flystem(FolderStructureConvention $folderStructure)
+    public static function flysystem(FolderStructureConvention $folderStructure)
     {
         return new FlysystemComponent($folderStructure);
     }
